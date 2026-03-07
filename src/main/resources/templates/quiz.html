@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz | QuizMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .timer-warning {
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+
+    <!-- Header avec timer -->
+    <header class="bg-white border-b border-slate-200 p-4 sticky top-0 z-10 shadow-lg backdrop-blur-lg bg-opacity-90">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <div class="bg-indigo-100 p-3 rounded-2xl">
+                    <i class="fas fa-question-circle text-indigo-600 text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-indigo-900" th:text="${categorie}">Catégorie</h1>
+                    <p class="text-sm text-slate-500" th:text="${session.participant != null ? session.participant.nom + ' - ' + session.participant.email : ''}"></p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-xs text-slate-400 mb-1">Temps restant</div>
+                <div id="timer" class="text-3xl font-mono font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-2xl">
+                    10:00
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Barre de progression -->
+    <div class="max-w-4xl mx-auto mt-6 px-6">
+        <div class="flex justify-between text-sm text-slate-500 mb-2">
+            <span>Progression</span>
+            <span id="progress-text">0/<span th:text="${questions.size()}"></span> questions</span>
+        </div>
+        <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+            <div id="progress-bar" class="bg-indigo-600 h-3 transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <main class="max-w-4xl mx-auto p-6">
+        <form id="quizForm" class="space-y-6">
+            <!-- Champs cachés avec les informations du participant -->
+            <input type="hidden" id="userEmail" th:value="${session.participant != null ? session.participant.email : ''}">
+            <input type="hidden" id="userNom" th:value="${session.participant != null ? session.participant.nom : ''}">
+            <input type="hidden" id="quizCat" th:value="${categorie}">
+
+            <!-- Questions -->
+            <div th:each="q, stat : ${questions}" class="question-card bg-white p-8 rounded-3xl shadow-sm border border-slate-100 mb-6" th:id="'question-' + ${stat.index}">
+                <div class="flex items-start gap-4">
+                    <!-- Numéro de question -->
+                    <div class="bg-indigo-600 text-white w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-lg shadow-md shadow-indigo-200 shrink-0" 
+                         th:text="${stat.count}">
+                    </div>
+                    
+                    <div class="flex-1">
+                        <!-- Énoncé -->
+                        <h3 class="text-xl font-bold text-slate-800 mb-6" th:text="${q.titre}">Énoncé de la question</h3>
+                        
+                        <!-- Options -->
+                        <div class="grid grid-cols-1 gap-4">
+                            <!-- Option 1 -->
+                            <label class="option-label flex items-center p-5 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/50 transition-all group">
+                                <input type="radio" th:name="'q' + ${q.id}" th:value="${q.option1}" 
+                                       class="w-5 h-5 text-indigo-600 focus:ring-indigo-500" required
+                                       onchange="updateProgress()">
+                                <div class="ml-4 flex-1">
+                                    <span class="text-slate-700 font-medium group-hover:text-indigo-900" th:text="${q.option1}">Option 1</span>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-slate-300 group-hover:border-indigo-500 flex items-center justify-center">
+                                    <div class="w-3 h-3 rounded-full bg-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                </div>
+                            </label>
+
+                            <!-- Option 2 -->
+                            <label class="option-label flex items-center p-5 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/50 transition-all group">
+                                <input type="radio" th:name="'q' + ${q.id}" th:value="${q.option2}" 
+                                       class="w-5 h-5 text-indigo-600 focus:ring-indigo-500"
+                                       onchange="updateProgress()">
+                                <div class="ml-4 flex-1">
+                                    <span class="text-slate-700 font-medium group-hover:text-indigo-900" th:text="${q.option2}">Option 2</span>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-slate-300 group-hover:border-indigo-500 flex items-center justify-center">
+                                    <div class="w-3 h-3 rounded-full bg-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                </div>
+                            </label>
+
+                            <!-- Option 3 -->
+                            <label class="option-label flex items-center p-5 border-2 border-slate-100 rounded-2xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/50 transition-all group">
+                                <input type="radio" th:name="'q' + ${q.id}" th:value="${q.option3}" 
+                                       class="w-5 h-5 text-indigo-600 focus:ring-indigo-500"
+                                       onchange="updateProgress()">
+                                <div class="ml-4 flex-1">
+                                    <span class="text-slate-700 font-medium group-hover:text-indigo-900" th:text="${q.option3}">Option 3</span>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-slate-300 group-hover:border-indigo-500 flex items-center justify-center">
+                                    <div class="w-3 h-3 rounded-full bg-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bouton de soumission -->
+            <div class="pt-6 sticky bottom-6">
+                <button type="button" id="submitQuizBtn"
+                        class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 text-white py-5 rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 hover:from-indigo-700 hover:to-indigo-800 transition-all transform hover:-translate-y-1">
+                    <i class="fas fa-paper-plane mr-2"></i> Terminer le Quiz
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // Variables globales
+        let timeLeft = 600; // 10 minutes en secondes
+        const timerElement = document.getElementById('timer');
+        const totalQuestionsElement = document.querySelector('[th\\:text="${questions.size()}"]');
+        const totalQuestions = totalQuestionsElement ? parseInt(totalQuestionsElement.textContent) : 0;
+        
+        console.log("Total questions:", totalQuestions);
+        
+        // Timer
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            // Avertissement quand il reste 1 minute
+            if (timeLeft === 60) {
+                timerElement.classList.add('timer-warning', 'text-red-600');
+                Swal.fire({
+                    title: 'Attention !',
+                    text: 'Il ne reste qu\'une minute pour terminer le quiz !',
+                    icon: 'warning',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            }
+            
+            if (timeLeft <= 0) {
+                // Temps écoulé - soumettre automatiquement
+                soumettreQuiz();
+            }
+            
+            timeLeft--;
+        }
+        
+        // Démarrer le timer
+        setInterval(updateTimer, 1000);
+        
+        // Mettre à jour la progression
+        function updateProgress() {
+            const total = totalQuestions;
+            const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+            const progress = (answered / total) * 100;
+            
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = answered + '/' + total + ' questions';
+            
+            // Si toutes les questions sont répondues, mettre en évidence le bouton
+            if (answered === total) {
+                document.getElementById('submitQuizBtn').classList.add('animate-pulse', 'bg-green-600');
+            }
+        }
+        
+        // Attacher l'événement au bouton
+        document.getElementById('submitQuizBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Vérifier que toutes les questions sont répondues
+            const total = totalQuestions;
+            const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+            
+            if (answered < total) {
+                Swal.fire({
+                    title: 'Questions incomplètes',
+                    text: `Vous avez répondu à ${answered} questions sur ${total}. Voulez-vous quand même terminer ?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Oui, terminer',
+                    cancelButtonText: 'Non, continuer',
+                    confirmButtonColor: '#4f46e5'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        soumettreQuiz();
+                    }
+                });
+            } else {
+                soumettreQuiz();
+            }
+        });
+
+        // Fonction de soumission du quiz
+        async function soumettreQuiz() {
+            // Afficher un loader
+            Swal.fire({
+                title: 'Traitement en cours...',
+                text: 'Veuillez patienter',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const formData = new FormData(document.getElementById('quizForm'));
+            const reponses = {};
+            formData.forEach((value, key) => { 
+                if (key.startsWith('q')) {
+                    reponses[key] = value; 
+                }
+            });
+
+            const email = document.getElementById('userEmail').value;
+            const categorie = document.getElementById('quizCat').value;
+
+            console.log("Email récupéré:", email);
+            console.log("Catégorie récupérée:", categorie);
+            console.log("Réponses:", reponses);
+
+            // Vérifier que l'email est présent
+            if (!email) {
+                Swal.fire({
+                    title: 'Erreur !',
+                    text: 'Email du participant non trouvé. Veuillez vous reconnecter.',
+                    icon: 'error',
+                    confirmButtonColor: '#4f46e5'
+                }).then(() => {
+                    window.location.href = "/";
+                });
+                return;
+            }
+
+            // Vérifier que la catégorie est présente
+            if (!categorie) {
+                Swal.fire({
+                    title: 'Erreur !',
+                    text: 'Catégorie non trouvée. Veuillez recommencer.',
+                    icon: 'error',
+                    confirmButtonColor: '#4f46e5'
+                }).then(() => {
+                    window.location.href = "/choix-categorie";
+                });
+                return;
+            }
+
+            try {
+                console.log("Envoi des données vers /api/quiz/soumettre...");
+                
+                const response = await fetch(`/api/quiz/soumettre?email=${encodeURIComponent(email)}&categorie=${encodeURIComponent(categorie)}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reponses)
+                });
+
+                console.log("Statut de la réponse:", response.status);
+                
+                // Essayer de parser la réponse
+                let data;
+                const responseText = await response.text();
+                console.log("Réponse brute:", responseText);
+                
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    console.error("Erreur de parsing JSON:", e);
+                    throw new Error("Réponse invalide du serveur: " + responseText);
+                }
+
+                if (!response.ok) {
+                    console.error("Erreur serveur:", data);
+                    throw new Error(data.error || "Erreur serveur: " + response.status);
+                }
+                
+                console.log("Données reçues :", data);
+                
+                const score = data.score !== undefined ? data.score : 0;
+                const status = data.status || "FAIL";
+                const message = data.message || (status === "SUCCESS" ? "Félicitations !" : "Essaie encore !");
+
+                // Fermer le loader
+                Swal.close();
+
+                // Afficher le résultat avec SweetAlert2
+                if (status === "SUCCESS") {
+                    Swal.fire({
+                        title: 'Félicitations ! 🎉',
+                        html: `
+                            <div class="text-center">
+                                <div class="text-7xl font-bold text-green-600 mb-4">${score}%</div>
+                                <div class="w-24 h-24 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-trophy text-green-600 text-4xl"></i>
+                                </div>
+                                <p class="text-lg text-slate-600 mb-2">${message}</p>
+                                <p class="text-sm text-slate-400">Continuez sur cette lancée !</p>
+                            </div>
+                        `,
+                        icon: 'success',
+                        showConfirmButton: true,
+                        confirmButtonText: 'Choisir une autre catégorie',
+                        confirmButtonColor: '#4f46e5',
+                        showCancelButton: true,
+                        cancelButtonText: 'Voir les résultats',
+                        cancelButtonColor: '#6b7280'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "/choix-categorie";
+                        } else {
+                            window.location.href = "/admin/dashboard";
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Dommage... 😕',
+                        html: `
+                            <div class="text-center">
+                                <div class="text-7xl font-bold text-red-600 mb-4">${score}%</div>
+                                <div class="w-24 h-24 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-book-open text-red-600 text-4xl"></i>
+                                </div>
+                                <p class="text-lg text-slate-600 mb-2">${message}</p>
+                                <p class="text-sm text-slate-400">Révisez et réessayez !</p>
+                            </div>
+                        `,
+                        icon: 'error',
+                        confirmButtonText: 'Réessayer',
+                        confirmButtonColor: '#4f46e5',
+                        showCancelButton: true,
+                        cancelButtonText: 'Changer de catégorie',
+                        cancelButtonColor: '#6b7280'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        } else {
+                            window.location.href = "/choix-categorie";
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Erreur détaillée :", error);
+                Swal.fire({
+                    title: 'Erreur !',
+                    html: `
+                        <p>Impossible d'enregistrer votre score.</p>
+                        <p class="text-sm text-red-400 mt-2">${error.message}</p>
+                        <p class="text-sm text-slate-400 mt-4">Vérifiez que vous êtes bien connecté.</p>
+                    `,
+                    icon: 'error',
+                    confirmButtonColor: '#4f46e5'
+                });
+            }
+        }
+
+        // Empêcher la soumission avec Entrée
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+
+        // Sauvegarde automatique
+        let autoSaveTimer;
+        function autoSave() {
+            const formData = new FormData(document.getElementById('quizForm'));
+            const reponses = {};
+            formData.forEach((value, key) => { 
+                if (key.startsWith('q')) {
+                    reponses[key] = value; 
+                }
+            });
+            localStorage.setItem('quiz_autosave', JSON.stringify(reponses));
+            localStorage.setItem('quiz_autosave_time', new Date().toLocaleTimeString());
+            console.log("Auto-sauvegarde effectuée");
+        }
+
+        // Auto-save toutes les 30 secondes
+        document.querySelectorAll('input[type="radio"]').forEach(input => {
+            input.addEventListener('change', () => {
+                clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(autoSave, 30000);
+            });
+        });
+
+        // Restaurer la sauvegarde automatique
+        window.addEventListener('load', function() {
+            const saved = localStorage.getItem('quiz_autosave');
+            if (saved) {
+                const lastSave = localStorage.getItem('quiz_autosave_time');
+                Swal.fire({
+                    title: 'Sauvegarde trouvée',
+                    text: `Voulez-vous restaurer votre dernière session (${lastSave}) ?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Oui',
+                    cancelButtonText: 'Non',
+                    confirmButtonColor: '#4f46e5'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const reponses = JSON.parse(saved);
+                        Object.keys(reponses).forEach(key => {
+                            const input = document.querySelector(`input[name="${key}"][value="${reponses[key]}"]`);
+                            if (input) {
+                                input.checked = true;
+                            }
+                        });
+                        updateProgress();
+                        Swal.fire('Restauré !', 'Vos réponses ont été restaurées.', 'success');
+                    }
+                    localStorage.removeItem('quiz_autosave');
+                    localStorage.removeItem('quiz_autosave_time');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
