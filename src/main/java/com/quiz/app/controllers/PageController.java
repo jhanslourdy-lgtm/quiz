@@ -99,22 +99,6 @@ public String afficherQuiz(@PathVariable String categorie, HttpSession session, 
     return "quiz";
 }
 
-//    @GetMapping("/quiz/{categorie}")
-//    public String afficherQuiz(@PathVariable String categorie, HttpSession session, Model model) {
-//        if (session.getAttribute("participant") == null) {
-//            return "redirect:/";
-//        }
-//        
-//        List<Question> questions = questionService.getQuestionsParCategorie(categorie.toUpperCase());
-//        model.addAttribute("questions", questions);
-//        model.addAttribute("categorie", categorie.toUpperCase());
-//        
-//        // Ajouter la catégorie à la session pour le QuizController
-//        session.setAttribute("categorieChoisie", categorie.toUpperCase());
-//        
-//        return "quiz";
-//    }
-
     @GetMapping("/admin/dashboard")
     public String dashboard(HttpSession session, Model model) {
         System.out.println("===== DASHBOARD ACCESS =====");

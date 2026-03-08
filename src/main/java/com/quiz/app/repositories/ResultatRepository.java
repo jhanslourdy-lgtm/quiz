@@ -8,6 +8,6 @@ import java.util.List;
 @Repository
 public interface ResultatRepository extends JpaRepository<Resultat, Long> {
     
-    // Remplace findByParticipantId par findByEmailParticipant
-    List<Resultat> findByEmailParticipant(String email);
+    
+List<Resultat> findByParticipantEmail(String email);
 }

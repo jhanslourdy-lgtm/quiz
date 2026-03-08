@@ -33,13 +33,6 @@ public class AdminController {
         return ResponseEntity.ok(nouvelleQuestion);
     }
 
-    // Supprimer une question : DELETE http://localhost:8080/api/admin/questions/5
-//    @DeleteMapping("/questions/{id}")
-//    public ResponseEntity<String> supprimer(@PathVariable Long id) {
-//        questionService.supprimerQuestion(id);
-//        return ResponseEntity.ok("Question supprimée avec succès.");
-//    }
-    // Ajoutez cette méthode pour gérer la suppression via l'API
 @DeleteMapping("/questions/{id}")
 public ResponseEntity<String> supprimerQuestion(@PathVariable Long id) {
     questionService.supprimerQuestion(id);
