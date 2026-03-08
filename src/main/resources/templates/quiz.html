@@ -736,225 +736,384 @@
         });
 
         // Fonction de soumission du quiz
-        async function soumettreQuiz() {
-            // Afficher un loader
+//        async function soumettreQuiz() {
+//            // Afficher un loader
+//            Swal.fire({
+//                title: 'Traitement en cours...',
+//                text: 'Veuillez patienter',
+//                allowOutsideClick: false,
+//                didOpen: () => {
+//                    Swal.showLoading();
+//                }
+//            });
+//
+//            const formData = new FormData(document.getElementById('quizForm'));
+//            const reponses = {};
+//            formData.forEach((value, key) => { 
+//                if (key.startsWith('q')) {
+//                    reponses[key] = value; 
+//                }
+//            });
+//
+//            const email = document.getElementById('userEmail').value;
+//            const categorie = document.getElementById('quizCat').value;
+//
+//            console.log("Email récupéré:", email);
+//            console.log("Catégorie récupérée:", categorie);
+//            console.log("Réponses:", reponses);
+//
+//            // Vérifier que l'email est présent
+//            if (!email) {
+//                Swal.fire({
+//                    title: 'Erreur !',
+//                    text: 'Email du participant non trouvé. Veuillez vous reconnecter.',
+//                    icon: 'error',
+//                    confirmButtonColor: '#4f46e5'
+//                }).then(() => {
+//                    window.location.href = "/";
+//                });
+//                return;
+//            }
+//
+//            // Vérifier que la catégorie est présente
+//            if (!categorie) {
+//                Swal.fire({
+//                    title: 'Erreur !',
+//                    text: 'Catégorie non trouvée. Veuillez recommencer.',
+//                    icon: 'error',
+//                    confirmButtonColor: '#4f46e5'
+//                }).then(() => {
+//                    window.location.href = "/choix-categorie";
+//                });
+//                return;
+//            }
+//
+//            try {
+//                console.log("Envoi des données vers /api/quiz/soumettre...");
+//                
+//                const response = await fetch(`/api/quiz/soumettre?email=${encodeURIComponent(email)}&categorie=${encodeURIComponent(categorie)}`, {
+//                    method: 'POST',
+//                    headers: { 'Content-Type': 'application/json' },
+//                    body: JSON.stringify(reponses)
+//                });
+//
+//                console.log("Statut de la réponse:", response.status);
+//                
+//                // Essayer de parser la réponse
+//                let data;
+//                const responseText = await response.text();
+//                console.log("Réponse brute:", responseText);
+//                
+//                try {
+//                    data = JSON.parse(responseText);
+//                } catch (e) {
+//                    console.error("Erreur de parsing JSON:", e);
+//                    throw new Error("Réponse invalide du serveur: " + responseText);
+//                }
+//
+//                if (!response.ok) {
+//                    console.error("Erreur serveur:", data);
+//                    throw new Error(data.error || "Erreur serveur: " + response.status);
+//                }
+//                
+//                console.log("Données reçues :", data);
+//                
+//                const score = data.score !== undefined ? data.score : 0;
+//                const status = data.status || "FAIL";
+//                const message = data.message || (status === "SUCCESS" ? "Félicitations !" : "Essaie encore !");
+//
+//                // Fermer le loader
+//                Swal.close();
+//
+//                // Afficher le résultat avec SweetAlert2
+//                if (status === "SUCCESS") {
+//                    Swal.fire({
+//                        title: 'Félicitations ! 🎉',
+//                        html: `
+//                            <div class="text-center">
+//                                <div class="text-5xl sm:text-7xl font-bold text-green-600 mb-4">${score}%</div>
+//                                <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+//                                    <i class="fas fa-trophy text-green-600 text-3xl sm:text-4xl"></i>
+//                                </div>
+//                                <p class="text-base sm:text-lg text-slate-600 mb-2">${message}</p>
+//                                <p class="text-xs sm:text-sm text-slate-400">Continuez sur cette lancée !</p>
+//                            </div>
+//                        `,
+//                        icon: 'success',
+//                        showConfirmButton: true,
+//                        confirmButtonText: 'Choisir une autre catégorie',
+//                        confirmButtonColor: '#4f46e5',
+//                        showCancelButton: true,
+//                        cancelButtonText: 'Voir les résultats',
+//                        cancelButtonColor: '#6b7280'
+//                    }).then((result) => {
+//                        if (result.isConfirmed) {
+//                            window.location.href = "/choix-categorie";
+//                        } else {
+//                            window.location.href = "/admin/dashboard";
+//                        }
+//                    });
+//                } else {
+//                    Swal.fire({
+//                        title: 'Dommage... 😕',
+//                        html: `
+//                            <div class="text-center">
+//                                <div class="text-5xl sm:text-7xl font-bold text-red-600 mb-4">${score}%</div>
+//                                <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+//                                    <i class="fas fa-book-open text-red-600 text-3xl sm:text-4xl"></i>
+//                                </div>
+//                                <p class="text-base sm:text-lg text-slate-600 mb-2">${message}</p>
+//                                <p class="text-xs sm:text-sm text-slate-400">Révisez et réessayez !</p>
+//                            </div>
+//                        `,
+//                        icon: 'error',
+//                        confirmButtonText: 'Réessayer',
+//                        confirmButtonColor: '#4f46e5',
+//                        showCancelButton: true,
+//                        cancelButtonText: 'Changer de catégorie',
+//                        cancelButtonColor: '#6b7280'
+//                    }).then((result) => {
+//                        if (result.isConfirmed) {
+//                            location.reload();
+//                        } else {
+//                            window.location.href = "/choix-categorie";
+//                        }
+//                    });
+//                }
+//            } catch (error) {
+//                console.error("Erreur détaillée :", error);
+//                Swal.fire({
+//                    title: 'Erreur !',
+//                    html: `
+//                        <p>Impossible d'enregistrer votre score.</p>
+//                        <p class="text-sm text-red-400 mt-2">${error.message}</p>
+//                        <p class="text-xs sm:text-sm text-slate-400 mt-4">Vérifiez que vous êtes bien connecté.</p>
+//                    `,
+//                    icon: 'error',
+//                    confirmButtonColor: '#4f46e5'
+//                });
+//            }
+//        }
+//
+//        // Empêcher la soumission avec Entrée
+//        document.addEventListener('keypress', function(e) {
+//            if (e.key === 'Enter') {
+//                e.preventDefault();
+//            }
+//        });
+//
+//        // Sauvegarde automatique
+//        let autoSaveTimer;
+//        function autoSave() {
+//            const formData = new FormData(document.getElementById('quizForm'));
+//            const reponses = {};
+//            formData.forEach((value, key) => { 
+//                if (key.startsWith('q')) {
+//                    reponses[key] = value; 
+//                }
+//            });
+//            localStorage.setItem('quiz_autosave', JSON.stringify(reponses));
+//            localStorage.setItem('quiz_autosave_time', new Date().toLocaleTimeString());
+//            console.log("Auto-sauvegarde effectuée");
+//        }
+//
+//        // Auto-save toutes les 30 secondes
+//        document.querySelectorAll('input[type="radio"]').forEach(input => {
+//            input.addEventListener('change', () => {
+//                clearTimeout(autoSaveTimer);
+//                autoSaveTimer = setTimeout(autoSave, 30000);
+//            });
+//        });
+//
+//        // Restaurer la sauvegarde automatique
+//        window.addEventListener('load', function() {
+//            const saved = localStorage.getItem('quiz_autosave');
+//            if (saved) {
+//                const lastSave = localStorage.getItem('quiz_autosave_time');
+//                Swal.fire({
+//                    title: 'Sauvegarde trouvée',
+//                    text: `Voulez-vous restaurer votre dernière session (${lastSave}) ?`,
+//                    icon: 'question',
+//                    showCancelButton: true,
+//                    confirmButtonText: 'Oui',
+//                    cancelButtonText: 'Non',
+//                    confirmButtonColor: '#4f46e5'
+//                }).then((result) => {
+//                    if (result.isConfirmed) {
+//                        const reponses = JSON.parse(saved);
+//                        Object.keys(reponses).forEach(key => {
+//                            const input = document.querySelector(`input[name="${key}"][value="${reponses[key]}"]`);
+//                            if (input) {
+//                                input.checked = true;
+//                            }
+//                        });
+//                        updateProgress();
+//                        Swal.fire('Restauré !', 'Vos réponses ont été restaurées.', 'success');
+//                    }
+//                    localStorage.removeItem('quiz_autosave');
+//                    localStorage.removeItem('quiz_autosave_time');
+//                });
+//            }
+//        });
+// Fonction de soumission du quiz
+async function soumettreQuiz() {
+    // Afficher un loader
+    Swal.fire({
+        title: 'Traitement en cours...',
+        text: 'Veuillez patienter',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    const formData = new FormData(document.getElementById('quizForm'));
+    const reponses = {};
+    formData.forEach((value, key) => { 
+        if (key.startsWith('q')) {
+            reponses[key] = value; 
+        }
+    });
+
+    const email = document.getElementById('userEmail').value;
+    const categorie = document.getElementById('quizCat').value;
+
+    console.log("Email récupéré:", email);
+    console.log("Catégorie récupérée:", categorie);
+    console.log("Réponses:", reponses);
+
+    // Vérifier que l'email est présent
+    if (!email) {
+        Swal.fire({
+            title: 'Erreur !',
+            text: 'Email du participant non trouvé. Veuillez vous reconnecter.',
+            icon: 'error',
+            confirmButtonColor: '#4f46e5'
+        }).then(() => {
+            window.location.href = "/";
+        });
+        return;
+    }
+
+    // Vérifier que la catégorie est présente
+    if (!categorie) {
+        Swal.fire({
+            title: 'Erreur !',
+            text: 'Catégorie non trouvée. Veuillez recommencer.',
+            icon: 'error',
+            confirmButtonColor: '#4f46e5'
+        }).then(() => {
+            window.location.href = "/choix-categorie";
+        });
+        return;
+    }
+
+    try {
+        console.log("Envoi des données vers /api/quiz/soumettre...");
+        
+        const response = await fetch(`/api/quiz/soumettre?email=${encodeURIComponent(email)}&categorie=${encodeURIComponent(categorie)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reponses)
+        });
+
+        console.log("Statut de la réponse:", response.status);
+        
+        // Essayer de parser la réponse
+        let data;
+        const responseText = await response.text();
+        console.log("Réponse brute:", responseText);
+        
+        try {
+            data = JSON.parse(responseText);
+        } catch (e) {
+            console.error("Erreur de parsing JSON:", e);
+            throw new Error("Réponse invalide du serveur: " + responseText);
+        }
+
+        if (!response.ok) {
+            console.error("Erreur serveur:", data);
+            throw new Error(data.error || "Erreur serveur: " + response.status);
+        }
+        
+        console.log("Données reçues :", data);
+        
+        const score = data.score !== undefined ? data.score : 0;
+        const status = data.status || "FAIL";
+        const message = data.message || (status === "SUCCESS" ? "Félicitations !" : "Essaie encore !");
+
+        // Fermer le loader
+        Swal.close();
+
+        // Afficher le résultat avec SweetAlert2
+        if (status === "SUCCESS") {
             Swal.fire({
-                title: 'Traitement en cours...',
-                text: 'Veuillez patienter',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            const formData = new FormData(document.getElementById('quizForm'));
-            const reponses = {};
-            formData.forEach((value, key) => { 
-                if (key.startsWith('q')) {
-                    reponses[key] = value; 
-                }
-            });
-
-            const email = document.getElementById('userEmail').value;
-            const categorie = document.getElementById('quizCat').value;
-
-            console.log("Email récupéré:", email);
-            console.log("Catégorie récupérée:", categorie);
-            console.log("Réponses:", reponses);
-
-            // Vérifier que l'email est présent
-            if (!email) {
-                Swal.fire({
-                    title: 'Erreur !',
-                    text: 'Email du participant non trouvé. Veuillez vous reconnecter.',
-                    icon: 'error',
-                    confirmButtonColor: '#4f46e5'
-                }).then(() => {
-                    window.location.href = "/";
-                });
-                return;
-            }
-
-            // Vérifier que la catégorie est présente
-            if (!categorie) {
-                Swal.fire({
-                    title: 'Erreur !',
-                    text: 'Catégorie non trouvée. Veuillez recommencer.',
-                    icon: 'error',
-                    confirmButtonColor: '#4f46e5'
-                }).then(() => {
+                title: 'Félicitations ! 🎉',
+                html: `
+                    <div class="text-center">
+                        <div class="text-5xl sm:text-7xl font-bold text-green-600 mb-4">${score}%</div>
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-trophy text-green-600 text-3xl sm:text-4xl"></i>
+                        </div>
+                        <p class="text-base sm:text-lg text-slate-600 mb-2">${message}</p>
+                        <p class="text-xs sm:text-sm text-slate-400">Continuez sur cette lancée !</p>
+                    </div>
+                `,
+                icon: 'success',
+                showConfirmButton: true,
+                confirmButtonText: 'Choisir une autre catégorie',
+                confirmButtonColor: '#4f46e5',
+                showCancelButton: true,
+                cancelButtonText: 'Voir les résultats',
+                cancelButtonColor: '#6b7280'
+            }).then((result) => {
+                if (result.isConfirmed) {
                     window.location.href = "/choix-categorie";
-                });
-                return;
-            }
-
-            try {
-                console.log("Envoi des données vers /api/quiz/soumettre...");
-                
-                const response = await fetch(`/api/quiz/soumettre?email=${encodeURIComponent(email)}&categorie=${encodeURIComponent(categorie)}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(reponses)
-                });
-
-                console.log("Statut de la réponse:", response.status);
-                
-                // Essayer de parser la réponse
-                let data;
-                const responseText = await response.text();
-                console.log("Réponse brute:", responseText);
-                
-                try {
-                    data = JSON.parse(responseText);
-                } catch (e) {
-                    console.error("Erreur de parsing JSON:", e);
-                    throw new Error("Réponse invalide du serveur: " + responseText);
-                }
-
-                if (!response.ok) {
-                    console.error("Erreur serveur:", data);
-                    throw new Error(data.error || "Erreur serveur: " + response.status);
-                }
-                
-                console.log("Données reçues :", data);
-                
-                const score = data.score !== undefined ? data.score : 0;
-                const status = data.status || "FAIL";
-                const message = data.message || (status === "SUCCESS" ? "Félicitations !" : "Essaie encore !");
-
-                // Fermer le loader
-                Swal.close();
-
-                // Afficher le résultat avec SweetAlert2
-                if (status === "SUCCESS") {
-                    Swal.fire({
-                        title: 'Félicitations ! 🎉',
-                        html: `
-                            <div class="text-center">
-                                <div class="text-5xl sm:text-7xl font-bold text-green-600 mb-4">${score}%</div>
-                                <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-trophy text-green-600 text-3xl sm:text-4xl"></i>
-                                </div>
-                                <p class="text-base sm:text-lg text-slate-600 mb-2">${message}</p>
-                                <p class="text-xs sm:text-sm text-slate-400">Continuez sur cette lancée !</p>
-                            </div>
-                        `,
-                        icon: 'success',
-                        showConfirmButton: true,
-                        confirmButtonText: 'Choisir une autre catégorie',
-                        confirmButtonColor: '#4f46e5',
-                        showCancelButton: true,
-                        cancelButtonText: 'Voir les résultats',
-                        cancelButtonColor: '#6b7280'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "/choix-categorie";
-                        } else {
-                            window.location.href = "/admin/dashboard";
-                        }
-                    });
                 } else {
-                    Swal.fire({
-                        title: 'Dommage... 😕',
-                        html: `
-                            <div class="text-center">
-                                <div class="text-5xl sm:text-7xl font-bold text-red-600 mb-4">${score}%</div>
-                                <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-book-open text-red-600 text-3xl sm:text-4xl"></i>
-                                </div>
-                                <p class="text-base sm:text-lg text-slate-600 mb-2">${message}</p>
-                                <p class="text-xs sm:text-sm text-slate-400">Révisez et réessayez !</p>
-                            </div>
-                        `,
-                        icon: 'error',
-                        confirmButtonText: 'Réessayer',
-                        confirmButtonColor: '#4f46e5',
-                        showCancelButton: true,
-                        cancelButtonText: 'Changer de catégorie',
-                        cancelButtonColor: '#6b7280'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
-                        } else {
-                            window.location.href = "/choix-categorie";
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error("Erreur détaillée :", error);
-                Swal.fire({
-                    title: 'Erreur !',
-                    html: `
-                        <p>Impossible d'enregistrer votre score.</p>
-                        <p class="text-sm text-red-400 mt-2">${error.message}</p>
-                        <p class="text-xs sm:text-sm text-slate-400 mt-4">Vérifiez que vous êtes bien connecté.</p>
-                    `,
-                    icon: 'error',
-                    confirmButtonColor: '#4f46e5'
-                });
-            }
-        }
-
-        // Empêcher la soumission avec Entrée
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-            }
-        });
-
-        // Sauvegarde automatique
-        let autoSaveTimer;
-        function autoSave() {
-            const formData = new FormData(document.getElementById('quizForm'));
-            const reponses = {};
-            formData.forEach((value, key) => { 
-                if (key.startsWith('q')) {
-                    reponses[key] = value; 
+                    window.location.href = "/admin/dashboard";
                 }
             });
-            localStorage.setItem('quiz_autosave', JSON.stringify(reponses));
-            localStorage.setItem('quiz_autosave_time', new Date().toLocaleTimeString());
-            console.log("Auto-sauvegarde effectuée");
-        }
-
-        // Auto-save toutes les 30 secondes
-        document.querySelectorAll('input[type="radio"]').forEach(input => {
-            input.addEventListener('change', () => {
-                clearTimeout(autoSaveTimer);
-                autoSaveTimer = setTimeout(autoSave, 30000);
+        } else {
+            Swal.fire({
+                title: 'Dommage... 😕',
+                html: `
+                    <div class="text-center">
+                        <div class="text-5xl sm:text-7xl font-bold text-red-600 mb-4">${score}%</div>
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-book-open text-red-600 text-3xl sm:text-4xl"></i>
+                        </div>
+                        <p class="text-base sm:text-lg text-slate-600 mb-2">${message}</p>
+                        <p class="text-xs sm:text-sm text-slate-400">Révisez et réessayez !</p>
+                    </div>
+                `,
+                icon: 'error',
+                confirmButtonText: 'Réessayer',
+                confirmButtonColor: '#4f46e5',
+                showCancelButton: true,
+                cancelButtonText: 'Changer de catégorie',
+                cancelButtonColor: '#6b7280'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload();
+                } else {
+                    window.location.href = "/choix-categorie";
+                }
             });
+        }
+    } catch (error) {
+        console.error("Erreur détaillée :", error);
+        Swal.fire({
+            title: 'Erreur !',
+            html: `
+                <p>Impossible d'enregistrer votre score.</p>
+                <p class="text-sm text-red-400 mt-2">${error.message}</p>
+                <p class="text-xs sm:text-sm text-slate-400 mt-4">Vérifiez que vous êtes bien connecté.</p>
+            `,
+            icon: 'error',
+            confirmButtonColor: '#4f46e5'
         });
-
-        // Restaurer la sauvegarde automatique
-        window.addEventListener('load', function() {
-            const saved = localStorage.getItem('quiz_autosave');
-            if (saved) {
-                const lastSave = localStorage.getItem('quiz_autosave_time');
-                Swal.fire({
-                    title: 'Sauvegarde trouvée',
-                    text: `Voulez-vous restaurer votre dernière session (${lastSave}) ?`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Oui',
-                    cancelButtonText: 'Non',
-                    confirmButtonColor: '#4f46e5'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const reponses = JSON.parse(saved);
-                        Object.keys(reponses).forEach(key => {
-                            const input = document.querySelector(`input[name="${key}"][value="${reponses[key]}"]`);
-                            if (input) {
-                                input.checked = true;
-                            }
-                        });
-                        updateProgress();
-                        Swal.fire('Restauré !', 'Vos réponses ont été restaurées.', 'success');
-                    }
-                    localStorage.removeItem('quiz_autosave');
-                    localStorage.removeItem('quiz_autosave_time');
-                });
-            }
-        });
+    }
+}
     </script>
 </body>
 </html>

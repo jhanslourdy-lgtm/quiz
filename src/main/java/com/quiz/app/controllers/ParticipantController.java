@@ -7,6 +7,7 @@ import com.quiz.app.entities.Resultat;
 import com.quiz.app.repositories.ParticipantRepository;
 import com.quiz.app.service.QuestionService;
 import com.quiz.app.service.QuizService;
+import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +37,27 @@ public class ParticipantController {
     public ResponseEntity<?> validerQuiz(
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String categorie,
-            @RequestBody(required = false) Map<String, String> reponses) {
+            @RequestBody(required = false) Map<String, String> reponses,
+            HttpSession session) {  // Ajout de HttpSession
         
         System.out.println("=== REQUÊTE REÇUE DANS PARTICIPANT CONTROLLER ===");
         System.out.println("Email reçu: " + email);
         System.out.println("Catégorie reçue: " + categorie);
         System.out.println("Réponses reçues: " + reponses);
+        
+        // 1. Essayer de récupérer depuis la session si non fourni
+        if (email == null || email.isEmpty()) {
+            Participant sessionParticipant = (Participant) session.getAttribute("participant");
+            if (sessionParticipant != null) {
+                email = sessionParticipant.getEmail();
+                System.out.println("Email récupéré depuis session: " + email);
+            }
+        }
+        
+        if (categorie == null || categorie.isEmpty()) {
+            categorie = (String) session.getAttribute("categorieChoisie");
+            System.out.println("Catégorie récupérée depuis session: " + categorie);
+        }
         
         // Vérifier les paramètres
         if (email == null || email.isEmpty()) {
