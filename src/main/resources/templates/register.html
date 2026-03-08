@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -63,6 +63,186 @@
                 Swal.fire('Erreur', 'Connexion au serveur impossible.', 'error');
             }
         }
+    </script>
+</body>
+</html>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Inscription | Quiz App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @media (max-width: 480px) {
+            .bg-white {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 1.875rem;
+            }
+            .text-gray-500 {
+                font-size: 0.875rem;
+            }
+            input {
+                padding: 0.75rem;
+            }
+            .w-20 {
+                width: 4rem;
+                height: 4rem;
+            }
+            .text-3xl {
+                font-size: 1.5rem;
+            }
+        }
+        /* Amélioration du touché */
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        /* Style pour champ invalide */
+        input:invalid {
+            border-color: #ef4444;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-600 to-teal-700 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-full max-w-md text-center">
+        <div class="mb-6 sm:mb-8">
+            <div class="bg-green-100 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-user-plus text-green-600 text-2xl sm:text-3xl"></i>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Créer un compte</h1>
+            <p class="text-sm sm:text-base text-gray-500">Rejoignez l'aventure Quiz Master</p>
+        </div>
+
+        <form id="registerForm" class="space-y-4 text-left">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700">Nom Complet <span class="text-red-500">*</span></label>
+                <input type="text" id="nom" required 
+                       class="w-full mt-1 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-sm sm:text-base"
+                       placeholder="Votre nom">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700">Email <span class="text-red-500">*</span></label>
+                <input type="email" id="email" required 
+                       class="w-full mt-1 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none text-sm sm:text-base"
+                       placeholder="votre@email.com">
+            </div>
+            
+            <button type="button" onclick="validerInscription()" 
+                    class="w-full bg-green-600 text-white py-3 sm:py-4 rounded-xl font-bold hover:bg-green-700 transition shadow-lg mt-4 text-sm sm:text-base">
+                S'inscrire maintenant
+            </button>
+        </form>
+        
+        <p class="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-600">
+            Déjà inscrit ? <a href="/" class="text-green-600 font-bold hover:underline">Connectez-vous</a>
+        </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        async function validerInscription() {
+            // Récupération des champs
+            const nomInput = document.getElementById('nom');
+            const emailInput = document.getElementById('email');
+            const nom = nomInput.value.trim();
+            const email = emailInput.value.trim();
+
+            // Validation des champs vides
+            if (!nom || !email) {
+                let messageErreur = '';
+                if (!nom && !email) {
+                    messageErreur = 'Veuillez remplir tous les champs.';
+                } else if (!nom) {
+                    messageErreur = 'Veuillez entrer votre nom.';
+                } else if (!email) {
+                    messageErreur = 'Veuillez entrer votre email.';
+                }
+                
+                Swal.fire({
+                    title: 'Champs requis',
+                    text: messageErreur,
+                    icon: 'warning',
+                    confirmButtonColor: '#10b981'
+                });
+                
+                // Mise en évidence des champs vides
+                if (!nom) {
+                    nomInput.classList.add('border-red-500', 'bg-red-50');
+                    setTimeout(() => nomInput.classList.remove('border-red-500', 'bg-red-50'), 2000);
+                }
+                if (!email) {
+                    emailInput.classList.add('border-red-500', 'bg-red-50');
+                    setTimeout(() => emailInput.classList.remove('border-red-500', 'bg-red-50'), 2000);
+                }
+                return;
+            }
+
+            // Validation du format email (simple)
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                Swal.fire({
+                    title: 'Email invalide',
+                    text: 'Veuillez entrer une adresse email valide.',
+                    icon: 'error',
+                    confirmButtonColor: '#10b981'
+                });
+                emailInput.classList.add('border-red-500', 'bg-red-50');
+                setTimeout(() => emailInput.classList.remove('border-red-500', 'bg-red-50'), 2000);
+                return;
+            }
+
+            const participant = {
+                nom: nom,
+                email: email
+            };
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(participant)
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Succès !',
+                        text: 'Votre compte a été créé. Connectez-vous avec votre email.',
+                        icon: 'success',
+                        confirmButtonColor: '#10b981'
+                    }).then(() => window.location.href = "/");
+                } else {
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Cet email est déjà utilisé.',
+                        icon: 'error',
+                        confirmButtonColor: '#10b981'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Erreur',
+                    text: 'Connexion au serveur impossible.',
+                    icon: 'error',
+                    confirmButtonColor: '#10b981'
+                });
+            }
+        }
+
+        // Ajout de la validation en temps réel (optionnel)
+        document.getElementById('nom').addEventListener('input', function() {
+            this.classList.remove('border-red-500', 'bg-red-50');
+        });
+        
+        document.getElementById('email').addEventListener('input', function() {
+            this.classList.remove('border-red-500', 'bg-red-50');
+        });
     </script>
 </body>
 </html>

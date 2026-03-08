@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -42,6 +42,94 @@
         
         <div class="text-center mt-12">
             <a href="/logout" class="text-gray-500 hover:text-red-500 font-medium"><i class="fas fa-sign-out-alt"></i> Se déconnecter</a>
+        </div>
+    </div>
+</body>
+</html>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Choisir un Quiz | Quiz Master</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Améliorations responsives */
+        @media (max-width: 640px) {
+            .group {
+                @apply p-6;
+            }
+            h1 {
+                font-size: 1.875rem;
+                line-height: 2.25rem;
+            }
+            .group .w-20 {
+                width: 4rem;
+                height: 4rem;
+            }
+            .group .text-3xl {
+                font-size: 1.5rem;
+            }
+        }
+        /* Ajustement pour très petits écrans */
+        @media (max-width: 360px) {
+            .max-w-5xl {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .text-xl {
+                font-size: 1rem;
+            }
+        }
+        /* Amélioration du touché sur mobile */
+        .group {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .group:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center">
+
+    <div class="max-w-5xl mx-auto py-8 sm:py-16 px-4 sm:px-6 w-full">
+        <div class="text-center mb-8 sm:mb-16">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 sm:mb-4">Prêt pour le défi ?</h1>
+            <p class="text-base sm:text-xl text-gray-600 px-4">Sélectionnez une catégorie pour commencer votre évaluation.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
+            <a href="/quiz/MATHS" class="group bg-white p-6 sm:p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 border-b-8 border-blue-500 text-center">
+                <div class="bg-blue-100 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 group-hover:bg-blue-500 transition-colors">
+                    <i class="fas fa-calculator text-blue-600 text-2xl sm:text-3xl group-hover:text-white"></i>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Mathématiques</h2>
+                <p class="text-sm sm:text-base text-gray-500">Algèbre, Géométrie et Logique.</p>
+            </a>
+
+            <a href="/quiz/CHIMIE" class="group bg-white p-6 sm:p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 border-b-8 border-pink-500 text-center">
+                <div class="bg-pink-100 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 group-hover:bg-pink-500 transition-colors">
+                    <i class="fas fa-flask text-pink-600 text-2xl sm:text-3xl group-hover:text-white"></i>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Chimie</h2>
+                <p class="text-sm sm:text-base text-gray-500">Réactions, Éléments et Molécules.</p>
+            </a>
+
+            <a href="/quiz/ANGLAIS" class="group bg-white p-6 sm:p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 border-b-8 border-indigo-500 text-center sm:col-span-2 md:col-span-1">
+                <div class="bg-indigo-100 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 group-hover:bg-indigo-500 transition-colors">
+                    <i class="fas fa-language text-indigo-600 text-2xl sm:text-3xl group-hover:text-white"></i>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Anglais</h2>
+                <p class="text-sm sm:text-base text-gray-500">Grammaire, Vocabulaire et Compréhension.</p>
+            </a>
+        </div>
+        
+        <div class="text-center mt-8 sm:mt-12">
+            <a href="/logout" class="text-gray-500 hover:text-red-500 font-medium inline-block p-3"><i class="fas fa-sign-out-alt"></i> Se déconnecter</a>
         </div>
     </div>
 </body>

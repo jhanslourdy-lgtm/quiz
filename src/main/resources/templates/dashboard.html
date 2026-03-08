@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
 </head>
 <body class="bg-slate-100 flex h-screen overflow-hidden">
 
-    <!-- Sidebar -->
+     Sidebar 
     <aside class="w-64 bg-indigo-900 text-white flex flex-col">
         <div class="p-6 text-2xl font-bold border-b border-indigo-800 italic">
             QuizMaster <span class="text-indigo-400">Pro</span>
@@ -39,17 +39,17 @@
         </div>
     </aside>
 
-    <!-- Main Content -->
+     Main Content 
     <main class="flex-1 overflow-y-auto p-8">
 
-        <!-- Questions Tab -->
+         Questions Tab 
         <div id="questions" class="tab-content active space-y-6">
             <div class="flex justify-between items-center">
                 <h2 class="text-2xl font-bold text-slate-800">Gestion des Questions</h2>
                 <span class="bg-indigo-600 text-white px-4 py-1 rounded-full text-sm" th:text="${questions.size() + ' questions'}"></span>
             </div>
 
-            <!-- Formulaire d'ajout -->
+             Formulaire d'ajout 
             <section class="bg-white p-6 rounded-2xl shadow-sm border">
                 <h3 class="font-bold mb-4 text-slate-600 italic">Nouvelle Question</h3>
                 <form th:action="@{/admin/questions/ajouter}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -74,7 +74,7 @@
                 </form>
             </section>
 
-            <!-- Liste des questions -->
+             Liste des questions 
             <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
                 <table class="w-full text-left">
                     <thead class="bg-slate-50 text-slate-400 uppercase text-xs font-bold">
@@ -125,7 +125,7 @@
             </div>
         </div>
 
-        <!-- Participants Tab -->
+         Participants Tab 
         <div id="participants" class="tab-content space-y-6">
             <h2 class="text-2xl font-bold text-slate-800">Liste des Participants</h2>
             <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
@@ -158,7 +158,7 @@
             </div>
         </div>
 
-        <!-- Scores Tab -->
+         Scores Tab 
         <div id="scores" class="tab-content space-y-6">
             <div class="flex justify-between items-center">
                 <h2 class="text-2xl font-bold text-slate-800 italic">Historique des Performances</h2>
@@ -170,7 +170,7 @@
                 </button>
             </div>
             
-            <!-- Statistiques rapides - avec gestion du cas vide -->
+             Statistiques rapides - avec gestion du cas vide 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6" th:if="${not #lists.isEmpty(resultats)}">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border">
                     <div class="flex items-center justify-between">
@@ -207,7 +207,7 @@
                 </div>
             </div>
 
-            <!-- Message quand l'historique est vide -->
+             Message quand l'historique est vide 
             <div th:if="${#lists.isEmpty(resultats)}" class="bg-white p-12 rounded-2xl shadow-sm border text-center">
                 <div class="text-slate-400 text-6xl mb-4">
                     <i class="fas fa-chart-bar"></i>
@@ -217,7 +217,7 @@
                 <p class="text-sm text-slate-300 mt-4">Les résultats apparaîtront ici après que les participants aient terminé des quizzes.</p>
             </div>
 
-            <!-- Tableau des scores - caché si vide -->
+             Tableau des scores - caché si vide 
             <div th:if="${not #lists.isEmpty(resultats)}" class="bg-white rounded-2xl shadow-sm border overflow-hidden">
                 <table class="w-full text-left">
                     <thead class="bg-indigo-900 text-white text-xs uppercase font-bold">
@@ -252,7 +252,7 @@
         </div>
     </main>
 
-    <!-- Modal de modification -->
+     Modal de modification 
     <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
         <div class="bg-white p-8 rounded-2xl w-full max-w-2xl shadow-2xl">
             <div class="flex justify-between items-center mb-6">
@@ -361,6 +361,522 @@
 
         function closeEditModal() {
             document.getElementById('editModal').classList.add('hidden');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+
+        // Fonctions pour vider l'historique
+        function confirmerViderHistorique() {
+            Swal.fire({
+                title: 'Vider l\'historique ?',
+                text: 'Cette action supprimera définitivement tous les résultats. Êtes-vous sûr ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Oui, vider',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    viderHistorique();
+                }
+            });
+        }
+
+        async function viderHistorique() {
+            try {
+                const response = await fetch('/api/admin/resultats/vider', {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Succès !',
+                        text: 'L\'historique a été vidé avec succès.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    throw new Error('Erreur lors de la suppression');
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Erreur !',
+                    text: 'Impossible de vider l\'historique.',
+                    icon: 'error',
+                    confirmButtonColor: '#4f46e5'
+                });
+            }
+        }
+    </script>
+</body>
+</html>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Admin Panel | QuizMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .nav-link.active { background: #4338ca; color: white; }
+        .modal { display: none; }
+        .modal.show { display: flex; }
+        
+        /* Styles responsifs */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+            aside {
+                width: 100%;
+                height: auto;
+                position: sticky;
+                top: 0;
+                z-index: 50;
+            }
+            .nav-link {
+                justify-content: center;
+                padding: 0.75rem;
+            }
+            .nav-link i {
+                margin-right: 0.5rem;
+            }
+            main {
+                padding: 1rem;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            .grid-cols-1.md\:grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+            /* Formulaire responsive */
+            form.grid {
+                display: flex;
+                flex-direction: column;
+            }
+            form.grid > * {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-link span:not(.fa) {
+                font-size: 0.875rem;
+            }
+            .p-8 {
+                padding: 1rem;
+            }
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+            /* Modal responsive */
+            #editModal .bg-white {
+                margin: 1rem;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+        }
+        
+        /* Amélioration du scroll sur mobile */
+        .overflow-x-auto {
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Tap highlight suppression */
+        .nav-link, button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Ajustement des cartes statistiques */
+        @media (max-width: 768px) {
+            .grid-cols-1.md\:grid-cols-3.gap-6 {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 flex h-screen overflow-hidden md:overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-full md:w-64 bg-indigo-900 text-white flex flex-col md:h-screen">
+        <div class="p-4 md:p-6 text-xl md:text-2xl font-bold border-b border-indigo-800 italic text-center md:text-left">
+            QuizMaster <span class="text-indigo-400">Pro</span>
+        </div>
+        <nav class="flex md:flex-1 p-2 md:p-4 space-x-1 md:space-x-0 md:space-y-2 overflow-x-auto md:overflow-x-visible">
+            <button onclick="showTab('questions')" class="nav-link active flex-1 md:w-full flex items-center justify-center md:justify-start p-2 md:p-3 rounded-xl transition hover:bg-indigo-800 text-sm md:text-base">
+                <i class="fas fa-question-circle mr-1 md:mr-3"></i> <span class="hidden sm:inline">Questions</span>
+            </button>
+            <button onclick="showTab('participants')" class="nav-link flex-1 md:w-full flex items-center justify-center md:justify-start p-2 md:p-3 rounded-xl transition hover:bg-indigo-800 text-sm md:text-base">
+                <i class="fas fa-users mr-1 md:mr-3"></i> <span class="hidden sm:inline">Participants</span>
+            </button>
+            <button onclick="showTab('scores')" class="nav-link flex-1 md:w-full flex items-center justify-center md:justify-start p-2 md:p-3 rounded-xl transition hover:bg-indigo-800 text-sm md:text-base">
+                <i class="fas fa-chart-bar mr-1 md:mr-3"></i> <span class="hidden sm:inline">Historique</span>
+            </button>
+        </nav>
+        <div class="hidden md:block p-4 border-t border-indigo-800">
+            <a href="/logout" class="flex items-center p-3 text-red-400 hover:text-red-300 font-bold">
+                <i class="fas fa-sign-out-alt mr-3"></i> Déconnexion
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-8">
+
+        <!-- Questions Tab -->
+        <div id="questions" class="tab-content active space-y-4 md:space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <h2 class="text-xl md:text-2xl font-bold text-slate-800">Gestion des Questions</h2>
+                <span class="bg-indigo-600 text-white px-4 py-1 rounded-full text-sm" th:text="${questions.size() + ' questions'}"></span>
+            </div>
+
+            <!-- Formulaire d'ajout -->
+            <section class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border">
+                <h3 class="font-bold mb-4 text-slate-600 italic">Nouvelle Question</h3>
+                <form th:action="@{/admin/questions/ajouter}" method="POST" class="space-y-3">
+                    <input type="text" name="titre" placeholder="Énoncé de la question" required class="w-full p-3 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500">
+                    <select name="categorie" class="w-full p-3 border rounded-xl">
+                        <option value="MATHS">Mathématiques</option>
+                        <option value="CHIMIE">Chimie</option>
+                        <option value="ANGLAIS">Anglais</option>
+                    </select>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <input type="text" name="option1" placeholder="Option A" required class="p-3 border rounded-xl">
+                        <input type="text" name="option2" placeholder="Option B" required class="p-3 border rounded-xl">
+                        <input type="text" name="option3" placeholder="Option C" required class="p-3 border rounded-xl">
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-slate-50 p-3 rounded-xl border">
+                        <span class="text-sm font-bold text-slate-500">Bonne réponse :</span>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-1"><input type="radio" name="correctIndex" value="1" checked> A</label>
+                            <label class="flex items-center gap-1"><input type="radio" name="correctIndex" value="2"> B</label>
+                            <label class="flex items-center gap-1"><input type="radio" name="correctIndex" value="3"> C</label>
+                        </div>
+                        <button type="submit" class="w-full sm:w-auto sm:ml-auto bg-indigo-600 text-white px-8 py-2 rounded-xl font-bold hover:bg-indigo-700 transition">
+                            <i class="fas fa-save mr-2"></i>Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Liste des questions -->
+            <div class="bg-white rounded-2xl shadow-sm border overflow-x-auto">
+                <table class="w-full min-w-[800px] text-left">
+                    <thead class="bg-slate-50 text-slate-400 uppercase text-xs font-bold">
+                        <tr>
+                            <th class="p-4">ID</th>
+                            <th class="p-4">Énoncé</th>
+                            <th class="p-4">Catégorie</th>
+                            <th class="p-4">Options</th>
+                            <th class="p-4">Réponse</th>
+                            <th class="p-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        <tr th:each="q : ${questions}" class="hover:bg-slate-50">
+                            <td class="p-4 text-slate-400" th:text="${q.id}"></td>
+                            <td class="p-4 font-medium" th:text="${q.titre}"></td>
+                            <td class="p-4">
+                                <span th:class="|${q.categorie == 'MATHS' ? 'bg-blue-100 text-blue-600' : (q.categorie == 'CHIMIE' ? 'bg-pink-100 text-pink-600' : 'bg-indigo-100 text-indigo-600')} px-2 py-1 rounded-full text-xs font-bold|"
+                                      th:text="${q.categorie}"></span>
+                            </td>
+                            <td class="p-4 text-sm">
+                                <span class="block" th:text="'A: ' + ${q.option1}"></span>
+                                <span class="block" th:text="'B: ' + ${q.option2}"></span>
+                                <span class="block" th:text="'C: ' + ${q.option3}"></span>
+                            </td>
+                            <td class="p-4 text-green-600 font-bold" th:text="${q.reponseCorrecte}"></td>
+                            <td class="p-4 text-center whitespace-nowrap">
+                                <button onclick="openEditModal(
+                                    ${q.id},
+                                    '${q.titre}',
+                                    '${q.option1}',
+                                    '${q.option2}',
+                                    '${q.option3}',
+                                    '${q.reponseCorrecte}',
+                                    '${q.categorie}'
+                                )" class="text-blue-500 hover:text-blue-700 mx-2 transition p-2">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <a th:href="@{'/admin/questions/supprimer/' + ${q.id}}" 
+                                   class="text-red-500 hover:text-red-700 mx-2 transition p-2"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette question ?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Participants Tab -->
+        <div id="participants" class="tab-content space-y-4 md:space-y-6">
+            <h2 class="text-xl md:text-2xl font-bold text-slate-800">Liste des Participants</h2>
+            <div class="bg-white rounded-2xl shadow-sm border overflow-x-auto">
+                <table class="w-full min-w-[600px] text-left">
+                    <thead class="bg-slate-50 text-slate-400 uppercase text-xs font-bold">
+                        <tr>
+                            <th class="p-4">ID</th>
+                            <th class="p-4">Nom</th>
+                            <th class="p-4">Email</th>
+                            <th class="p-4">Date d'inscription</th>
+                            <th class="p-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        <tr th:each="p : ${participants}" class="hover:bg-slate-50">
+                            <td class="p-4 text-slate-400" th:text="${p.id}"></td>
+                            <td class="p-4 font-bold" th:text="${p.nom}"></td>
+                            <td class="p-4 text-indigo-600 break-all" th:text="${p.email}"></td>
+                            <td class="p-4 text-slate-400" th:text="${#temporals.format(p.dateInscription, 'dd/MM/yyyy')}"></td>
+                            <td class="p-4 text-center">
+                                <a th:href="@{'/admin/participants/supprimer/' + ${p.id}}" 
+                                   class="text-red-500 hover:text-red-700 p-2 inline-block"
+                                   onclick="return confirm('Supprimer ce participant ?')">
+                                    <i class="fas fa-user-minus"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Scores Tab -->
+        <div id="scores" class="tab-content space-y-4 md:space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <h2 class="text-xl md:text-2xl font-bold text-slate-800 italic">Historique des Performances</h2>
+                <button onclick="confirmerViderHistorique()" 
+                        class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-xl font-bold transition flex items-center justify-center gap-2"
+                        th:if="${not #lists.isEmpty(resultats)}">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Vider l'historique</span>
+                </button>
+            </div>
+            
+            <!-- Statistiques rapides -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" th:if="${not #lists.isEmpty(resultats)}">
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-slate-500">Total des quizzes</p>
+                            <p class="text-2xl md:text-3xl font-bold" th:text="${resultats.size()}"></p>
+                        </div>
+                        <div class="bg-indigo-100 p-3 rounded-full">
+                            <i class="fas fa-chart-pie text-indigo-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-slate-500">Score moyen</p>
+                            <p class="text-2xl md:text-3xl font-bold" th:text="${#aggregates.avg(resultats.![score])} + '%'"></p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border sm:col-span-2 md:col-span-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-slate-500">Taux de réussite</p>
+                            <p class="text-2xl md:text-3xl font-bold" th:text="${#aggregates.avg(resultats.![score >= 50 ? 1 : 0]) != null ? #aggregates.avg(resultats.![score >= 50 ? 1 : 0]) * 100 : 0} + '%'"></p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-trophy text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message quand l'historique est vide -->
+            <div th:if="${#lists.isEmpty(resultats)}" class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border text-center">
+                <div class="text-slate-400 text-4xl md:text-6xl mb-4">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h3 class="text-lg md:text-xl font-bold text-slate-600 mb-2">Historique vide</h3>
+                <p class="text-sm md:text-base text-slate-400">Aucun résultat de quiz pour le moment.</p>
+                <p class="text-xs md:text-sm text-slate-300 mt-4">Les résultats apparaîtront ici après que les participants aient terminé des quizzes.</p>
+            </div>
+
+            <!-- Tableau des scores -->
+            <div th:if="${not #lists.isEmpty(resultats)}" class="bg-white rounded-2xl shadow-sm border overflow-x-auto">
+                <table class="w-full min-w-[700px] text-left">
+                    <thead class="bg-indigo-900 text-white text-xs uppercase font-bold">
+                        <tr>
+                            <th class="p-4">Participant</th>
+                            <th class="p-4">Catégorie</th>
+                            <th class="p-4">Score</th>
+                            <th class="p-4">Date</th>
+                            <th class="p-4">Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        <tr th:each="res : ${resultats}" class="hover:bg-indigo-50/30">
+                            <td class="p-4 font-medium break-all" th:text="${res.emailParticipant}"></td>
+                            <td class="p-4" th:text="${res.categorie}"></td>
+                            <td class="p-4">
+                                <span th:class="${res.score >= 50 ? 'text-green-600' : 'text-red-600'}" 
+                                      class="font-bold text-base md:text-lg" 
+                                      th:text="${res.score} + '%'"></span>
+                            </td>
+                            <td class="p-4 text-slate-400 text-xs md:text-sm" 
+                                th:text="${#temporals.format(res.datePassage, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td class="p-4">
+                                <span th:class="${res.score >= 50 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}"
+                                      class="px-2 md:px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                                      th:text="${res.score >= 50 ? 'RÉUSSI' : 'ÉCHEC'}"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de modification -->
+    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-4 md:p-8 rounded-2xl w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6 sticky top-0 bg-white pt-2">
+                <h2 class="text-xl md:text-2xl font-bold text-slate-800">Modifier la Question</h2>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 p-2">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form th:action="@{/admin/questions/modifier}" method="POST" class="space-y-4">
+                <input type="hidden" id="edit-id" name="id">
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-600 mb-2">Énoncé</label>
+                        <input type="text" id="edit-titre" name="titre" required 
+                               class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-600 mb-2">Catégorie</label>
+                        <select id="edit-categorie" name="categorie" class="w-full p-3 border rounded-xl">
+                            <option value="MATHS">Mathématiques</option>
+                            <option value="CHIMIE">Chimie</option>
+                            <option value="ANGLAIS">Anglais</option>
+                        </select>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600 mb-2">Option A</label>
+                            <input type="text" id="edit-option1" name="option1" required 
+                                   class="w-full p-3 border rounded-xl">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600 mb-2">Option B</label>
+                            <input type="text" id="edit-option2" name="option2" required 
+                                   class="w-full p-3 border rounded-xl">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-600 mb-2">Option C</label>
+                            <input type="text" id="edit-option3" name="option3" required 
+                                   class="w-full p-3 border rounded-xl">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-600 mb-2">Bonne réponse</label>
+                        <div class="flex flex-wrap gap-4 p-4 bg-slate-50 rounded-xl">
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="correctIndex" value="1" id="edit-correct1"> A
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="correctIndex" value="2" id="edit-correct2"> B
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="correctIndex" value="3" id="edit-correct3"> C
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6 sticky bottom-0 bg-white pb-2">
+                    <button type="button" onclick="closeEditModal()" 
+                            class="w-full sm:w-auto bg-slate-200 px-6 py-2 rounded-xl font-bold hover:bg-slate-300 transition order-2 sm:order-1">
+                        Annuler
+                    </button>
+                    <button type="submit" 
+                            class="w-full sm:w-auto bg-indigo-600 text-white px-8 py-2 rounded-xl font-bold hover:bg-indigo-700 transition order-1 sm:order-2">
+                        <i class="fas fa-save mr-2"></i>Mettre à jour
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Version mobile du bouton de déconnexion
+        const mobileLogout = document.createElement('div');
+        mobileLogout.className = 'md:hidden p-4 border-t border-indigo-800 bg-indigo-900';
+        mobileLogout.innerHTML = '<a href="/logout" class="flex items-center justify-center p-3 text-red-400 hover:text-red-300 font-bold"><i class="fas fa-sign-out-alt mr-3"></i> Déconnexion</a>';
+        document.querySelector('aside').appendChild(mobileLogout);
+
+        // Fonction pour changer d'onglet
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            // Scroll to top when changing tabs on mobile
+            if (window.innerWidth <= 768) {
+                document.querySelector('main').scrollTop = 0;
+            }
+        }
+
+        // Fonction pour ouvrir la modale d'édition
+        function openEditModal(id, titre, option1, option2, option3, reponseCorrecte, categorie) {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-titre').value = titre;
+            document.getElementById('edit-option1').value = option1;
+            document.getElementById('edit-option2').value = option2;
+            document.getElementById('edit-option3').value = option3;
+            document.getElementById('edit-categorie').value = categorie;
+            
+            if (reponseCorrecte === option1) {
+                document.getElementById('edit-correct1').checked = true;
+            } else if (reponseCorrecte === option2) {
+                document.getElementById('edit-correct2').checked = true;
+            } else {
+                document.getElementById('edit-correct3').checked = true;
+            }
+            
+            document.getElementById('editModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            document.body.style.overflow = '';
         }
 
         window.onclick = function(event) {
